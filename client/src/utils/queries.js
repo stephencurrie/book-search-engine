@@ -7,7 +7,17 @@ export const QUERY_ME = gql`
       _id
       username
       email
-      SavedBooksContent
+      savedBooks {
+        _id: ID!
+        authors: String!
+        description: String!
+        name: String!
+        bookId: String!
+        image: String
+        link: String
+        title: String!
+      }
     }
   }
 `;
+
