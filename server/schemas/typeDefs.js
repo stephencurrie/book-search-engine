@@ -26,12 +26,18 @@ const typeDefs = gql`
     me: User
   }
 
+  type Auth {
+    token: ID!
+    user: User
+  }
+
   input SaveBookContent {
     description: String!
     title: String!
     bookId: String!
     image: String
     link: String
+    authors: [String]
   }
 
   type Mutation {

@@ -2,6 +2,7 @@ const { AuthenticationError } = require('apollo-server-express');
 const { User, Book } = require('../models');
 const { signToken } = require('../utils/auth');
 
+//Look at this
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
@@ -39,32 +40,28 @@ const resolvers = {
     //New code
     saveBook: async (parent, { SaveBookContent }, context) => {
       if (context.user) {
-        const book = await Book.create({
-          SaveBookContent,
-        });
 
-        await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { books: book_id } }
-        );
-
-        return book;
+            const updatedUser = await User.findOneAndUpdate(
+              { _id: context.user._id },
+              { $addToSet: { savedBooks: SaveBookContent } },
+              { new: true, runValidators: true }
+            );
+            return updatedUser;
+          
       }
       throw new AuthenticationError('You need to be logged in!');
     },
 
+
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
-        const book = await Book.findOneAndDelete({
-          _id: booktId,
-        });
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            { $pull: { savedBooks: { bookId: bookId } } },
+            { new: true }
+          );
 
-        await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { books: book._id } }
-        );
-
-        return book;
+        return updatedUser;
       }
       throw new AuthenticationError('You need to be logged in!');
     },

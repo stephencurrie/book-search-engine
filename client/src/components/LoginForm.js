@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+// input LOGIN_USER from mutations.  include usemutation from apollo client
 import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
 
@@ -9,7 +10,7 @@ const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
+//use mutation(LOGIN_USER) login and {error}
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
@@ -24,7 +25,7 @@ const LoginForm = () => {
       event.preventDefault();
       event.stopPropagation();
     }
-
+// line 30-37 const {data} = await login({variables: {...userFormData}})
     try {
       const response = await loginUser(userFormData);
 
@@ -34,6 +35,7 @@ const LoginForm = () => {
 
       const { token, user } = await response.json();
       console.log(user);
+      // token becomes data.login.token
       Auth.login(token);
     } catch (err) {
       console.error(err);
