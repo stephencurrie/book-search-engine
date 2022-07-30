@@ -1,55 +1,17 @@
 // see SignupForm.js for comments
 import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { LOGIN_USER } from '../utils/mutations';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-
-// import { loginUser } from '../utils/API';
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
-
-const LoginForm = () => {
-  const [formState, setFormState] = useState({ email: '', password: '' });
-  const [login, { error, data }] = useMutation(LOGIN_USER);
-
-  // update state based on form input changes
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
-  };
-
-  // submit form
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    console.log(formState);
-    try {
-      const { data } = await login({
-        variables: { ...formState },
-      });
-
-      Auth.login(data.login.token);
-    } catch (e) {
-      console.error(e);
-    }
-
-    // clear form values
-    setFormState({
-      email: '',
-      password: '',
-    });
-  };
-
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-//use mutation(LOGIN_USER) login and {error}
+  const [login, { error }] = useMutation(LOGIN_USER);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
@@ -64,26 +26,20 @@ const LoginForm = () => {
       event.preventDefault();
       event.stopPropagation();
     }
-// line 30-37 const {data} = await login({variables: {...userFormData}})
-    // try {
-    //   const response = await loginUser(userFormData);
 
-    //   if (!response.ok) {
-    //     throw new Error('something went wrong!');
-    //   }
-    
     try {
-      const {data} = await login({
-        variables:{...userFormData}
+      const { data } = await login({
+        variables: { ...userFormData }
       });
 
-      // const { token, user } = await response.json();
-      // console.log(user);
-      // token becomes data.login.token
-      Auth.login(token);
+      if (!data.ok) {
+        throw new Error('something went wrong!');
+      }
+
+      Auth.login(data.login.token);
     } catch (err) {
       console.error(err);
-      setShowAlert(true);
+   
     }
 
     setUserFormData({
@@ -133,7 +89,6 @@ const LoginForm = () => {
       </Form>
     </>
   );
-};
 };
 
 export default LoginForm;
