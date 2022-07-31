@@ -7,7 +7,11 @@ const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('savedBooks');
+        const userData = await 
+        User.findOne({ _id: context.user._id })
+        .select("__v -password")
+        .populate('savedBooks');
+        return userData
       }
       throw new AuthenticationError('You need to be logged in!');
     },
