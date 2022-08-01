@@ -8,9 +8,9 @@ import Auth from '../utils/auth';
 const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-    // set state for form validation
+    // // set state for form validation
     const [validated] = useState(false);
-    // set state for alert
+    // // set state for alert
     const [showAlert, setShowAlert] = useState(false);
 
   const [addUser, { error, data }] = useMutation(ADD_USER);
